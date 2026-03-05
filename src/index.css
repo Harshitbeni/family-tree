@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   CSS Variables — Neutral Theme (default)
+   ============================================================ */
+:root {
+  --bg: #f8f7f5;
+  --surface: #ffffff;
+  --surface-2: #f1efe9;
+  --border: #e2ddd6;
+  --text: #1a1a1a;
+  --text-muted: #6b6560;
+  --accent: #4a3728;
+  --accent-hover: #6b5240;
+  --accent-light: #f0ebe4;
+  --link: #6b5240;
+  --tag-bg: #ede9e2;
+  --tag-text: #5a4a3a;
+  --badge-alive: #d4edda;
+  --badge-alive-text: #155724;
+  --badge-deceased: #f5e6e6;
+  --badge-deceased-text: #721c24;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+/* ============================================================
+   CSS Variables — Game of Thrones Theme
+   ============================================================ */
+[data-theme="got"] {
+  --bg: #0f0e17;
+  --surface: #1a1a2e;
+  --surface-2: #16213e;
+  --border: #2e2e4e;
+  --text: #e8e0d0;
+  --text-muted: #9e9880;
+  --accent: #c9a84c;
+  --accent-hover: #e8c87a;
+  --accent-light: #1f1d30;
+  --link: #c9a84c;
+  --tag-bg: #1f1d30;
+  --tag-text: #c9a84c;
+  --badge-alive: #1a2e1f;
+  --badge-alive-text: #5ec97a;
+  --badge-deceased: #2e1a1a;
+  --badge-deceased-text: #e57373;
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Utility Classes
+   ============================================================ */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.theme-surface {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.theme-surface-2 {
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.theme-text { color: var(--text); }
+.theme-text-muted { color: var(--text-muted); }
+.theme-border { border-color: var(--border); }
+.theme-accent { color: var(--accent); }
+.theme-accent-bg { background-color: var(--accent); }
+.theme-accent-light { background-color: var(--accent-light); }
+.theme-link { color: var(--link); }
+
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text);
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.theme-btn:hover {
+  background-color: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.theme-btn-primary {
+  background-color: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.theme-btn-primary:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--bg);
+}
+
+.badge-alive {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--badge-alive);
+  color: var(--badge-alive-text);
+}
+
+.badge-deceased {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: var(--badge-deceased);
+  color: var(--badge-deceased-text);
+}
+
+/* ============================================================
+   GoT Theme Decorative Extras
+   ============================================================ */
+[data-theme="got"] .got-ornament::before {
+  content: '⸻ ✦ ⸻';
+  display: block;
+  text-align: center;
+  color: var(--accent);
+  font-size: 0.75rem;
+  letter-spacing: 4px;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="got"] .got-heading-deco {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+[data-theme="got"] .got-heading-deco::after {
+  content: '';
+  display: block;
+  height: 2px;
+  width: 60px;
+  background: var(--accent);
+  margin-top: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
