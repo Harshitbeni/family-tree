@@ -157,7 +157,7 @@ export default function FamilyTree() {
     } catch { return { x: 0, y: 0, scale: 1 } }
   })
   const [dragging, setDragging] = useState(false)
-  const dragOrigin = useRef({ x: 0, y: 0, tx: 0, ty: 0 })
+  const dragOrigin = useRef({})
   const [hoveredId, setHoveredId] = useState(null)
   const [fitDone, setFitDone] = useState(() => !!localStorage.getItem(TRANSFORM_KEY))
 
@@ -375,7 +375,7 @@ export default function FamilyTree() {
           flex: 1,
           overflow: 'hidden',
           position: 'relative',
-          cursor: dragging ? 'grabbing' : 'grab',
+          cursor: dragging ? 'grabbing' : 'default',
           userSelect: 'none',
         }}
         onMouseDown={onMouseDown}
