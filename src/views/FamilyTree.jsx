@@ -6,10 +6,10 @@ import { useTheme } from '../context/ThemeContext'
 import { ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
 
 // ── Layout constants ──────────────────────────────────────────────────────────
-const NODE_W = 136
-const NODE_H = 72
-const H_GAP  = 32
-const V_GAP  = 90
+const NODE_W = 140
+const NODE_H = 180
+const H_GAP  = 56
+const V_GAP  = 60
 
 const TRANSFORM_KEY = 'family-tree-transform'
 
@@ -479,10 +479,7 @@ function TreeNode({ person, pos, isHovered, inLineage, isHighlighting, hasChildr
   const born = formatYear(person.birth_year)
   const died = person.status === 'alive' ? '—' : formatYear(person.death_year)
 
-  const accentColor = person.house === 'Targaryen' ? '#8b0000'
-    : person.house === 'Arryn'     ? '#1a3d6b'
-    : person.house === 'Hightower' ? '#1a3d1a'
-    : 'var(--accent)'
+  const isTargaryen = person.house === 'Targaryen'
 
   return (
     <button
@@ -495,37 +492,40 @@ function TreeNode({ person, pos, isHovered, inLineage, isHighlighting, hasChildr
         position: 'absolute',
         left: pos.x,
         top: pos.y,
-        width: NODE_W,
+        minWidth: NODE_W,
+        width: 'max-content',
         height: NODE_H,
-        backgroundColor: isHovered ? 'var(--accent-light)' : 'var(--surface)',
-        border: isHovered ? '1.5px solid var(--accent)' : '1px solid var(--border)',
-        borderLeft: `3px solid ${accentColor}`,
-        borderRadius: '8px',
+        backgroundColor: isTargaryen ? 'var(--surface)' : 'transparent',
+        border: isHovered
+          ? `1px solid var(--accent)`
+          : `1px ${isTargaryen ? 'solid' : 'dashed'} var(--border)`,
+        borderRadius: '10px',
         cursor: 'pointer',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
-        gap: '8px',
-        padding: '0 10px',
+        justifyContent: 'center',
+        gap: '6px',
+        padding: '14px 12px 10px',
         boxShadow: isHovered ? '0 4px 16px rgba(0,0,0,0.15)' : '0 1px 4px rgba(0,0,0,0.07)',
-        transition: 'border-color 0.1s, background-color 0.1s, box-shadow 0.1s, opacity 0.15s',
+        transition: 'border-color 0.1s, box-shadow 0.1s, opacity 0.15s',
         zIndex: isHovered ? 10 : 1,
         fontFamily: 'inherit',
-        textAlign: 'left',
+        textAlign: 'center',
         outline: 'none',
         opacity: isHighlighting && !inLineage ? 0.2 : 1,
       }}
     >
-      <PersonAvatar person={person} size={28} fontSize={10} />
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <PersonAvatar person={person} size={112} />
+      <div style={{ flexShrink: 0 }}>
         <div style={{
           fontSize: '0.72rem',
           fontWeight: 600,
           color: 'var(--text)',
           fontFamily: 'var(--font-display)',
           whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
           lineHeight: 1.3,
+          textAlign: 'center',
         }}>
           {person.first_name} {person.last_name}
         </div>
@@ -534,19 +534,10 @@ function TreeNode({ person, pos, isHovered, inLineage, isHighlighting, hasChildr
           color: 'var(--text-muted)',
           marginTop: '2px',
           whiteSpace: 'nowrap',
+          textAlign: 'center',
         }}>
           {born}{person.status !== 'alive' && ` – ${died}`}
         </div>
-        {person.generation && (
-          <div style={{
-            fontSize: '0.6rem',
-            color: 'var(--accent)',
-            marginTop: '1px',
-            fontWeight: 500,
-          }}>
-            Gen. {person.generation}
-          </div>
-        )}
       </div>
     </button>
   )
