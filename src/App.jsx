@@ -6,6 +6,7 @@ import PersonCard from './views/PersonCard'
 import FamilyTimeline from './views/FamilyTimeline'
 import FamilyDataTable from './views/FamilyDataTable'
 import FamilyTree from './views/FamilyTree'
+import ThemeMusic from './components/ThemeMusic'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             </Routes>
           </div>
         </div>
+        <ThemeMusic />
       </HashRouter>
     </ThemeProvider>
   )
