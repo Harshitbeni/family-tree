@@ -31,7 +31,7 @@ export function getInitials(person) {
   return (f + l).toUpperCase()
 }
 
-const DATA_FILE = '/data/targaryens.csv'
+const DATA_FILE = `${import.meta.env.BASE_URL}data/targaryens.csv`
 
 export function useFamilyData() {
   const [people, setPeople] = useState([])
