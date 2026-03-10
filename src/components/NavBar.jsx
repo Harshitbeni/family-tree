@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
-import { List, Clock, GitBranch, Flame, Sun } from 'lucide-react'
+import { List, Clock, Table2, GitBranch, Flame, Sun } from 'lucide-react'
 
 const LINKS = [
   { to: '/', label: 'Family List', icon: List },
   { to: '/timeline', label: 'Timeline', icon: Clock },
+  { to: '/datatable', label: 'Data Table', icon: Table2 },
   { to: '/tree', label: 'Family Tree', icon: GitBranch },
 ]
 

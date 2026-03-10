@@ -4,6 +4,7 @@ import NavBar from './components/NavBar'
 import FamilyList from './views/FamilyList'
 import PersonCard from './views/PersonCard'
 import FamilyTimeline from './views/FamilyTimeline'
+import FamilyDataTable from './views/FamilyDataTable'
 import FamilyTree from './views/FamilyTree'
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<FamilyList />} />
               <Route path="/timeline" element={<FamilyTimeline />} />
+              <Route path="/datatable" element={<FamilyDataTable />} />
               <Route path="/tree" element={<FamilyTree />} />
               <Route path="/person/:id" element={<PersonCard />} />
               <Route path="*" element={<Navigate to="/" replace />} />
