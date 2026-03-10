@@ -12,6 +12,7 @@ const H_GAP  = 56
 const V_GAP  = 60
 
 const TRANSFORM_KEY = 'family-tree-transform'
+const CANVAS_PADDING = 320  // px of breathing room beyond any tree edge
 
 // ── Build parent→children map ─────────────────────────────────────────────────
 function buildChildMap(people) {
@@ -128,6 +129,19 @@ function getPath(from, to) {
   return `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`
 }
 
+// ── Clamp pan/zoom so the tree can't go fully off-screen ─────────────────────
+function clampTransform({ x, y, scale }, bounds, containerW, containerH) {
+  const minX = -CANVAS_PADDING - bounds.maxX * scale
+  const maxX =  containerW + CANVAS_PADDING - bounds.minX * scale
+  const minY = -CANVAS_PADDING - bounds.maxY * scale
+  const maxY =  containerH + CANVAS_PADDING - bounds.minY * scale
+  return {
+    x: Math.max(minX, Math.min(maxX, x)),
+    y: Math.max(minY, Math.min(maxY, y)),
+    scale,
+  }
+}
+
 // ── Bounding box for fit-to-screen ───────────────────────────────────────────
 function getBounds(positions) {
   const xs = Object.values(positions).map(p => p.x)
@@ -169,6 +183,11 @@ export default function FamilyTree() {
   // Layout
   const positions = useMemo(() => computeLayout(people), [people])
   const childMap  = useMemo(() => buildChildMap(people), [people])
+  const bounds    = useMemo(() =>
+    Object.keys(positions).length ? getBounds(positions) : { minX: 0, maxX: 800, minY: 0, maxY: 600 }
+  , [positions])
+  const boundsRef = useRef(bounds)
+  useEffect(() => { boundsRef.current = bounds }, [bounds])
 
   // Parent–child edges, with IDs attached for lineage highlighting
   const edges = useMemo(() => {
@@ -253,7 +272,11 @@ export default function FamilyTree() {
     if (!o.started && Math.hypot(dx, dy) < 4) return
     o.started = true
     setDragging(true)
-    setTransform(t => ({ ...t, x: o.tx + dx, y: o.ty + dy }))
+    setTransform(t => {
+      const cw = containerRef.current?.clientWidth  || 800
+      const ch = containerRef.current?.clientHeight || 600
+      return clampTransform({ ...t, x: o.tx + dx, y: o.ty + dy }, boundsRef.current, cw, ch)
+    })
   }, [])
 
   const onMouseUp = useCallback(() => {
@@ -270,6 +293,8 @@ export default function FamilyTree() {
       if (e.ctrlKey) {
         const factor = e.deltaY < 0 ? 1.06 : 0.945
         setTransform(t => {
+          const cw = containerRef.current?.clientWidth  || 800
+          const ch = containerRef.current?.clientHeight || 600
           const newScale = Math.max(0.15, Math.min(2.5, t.scale * factor))
           const rect = containerRef.current.getBoundingClientRect()
           const mx = e.clientX - rect.left
@@ -277,10 +302,14 @@ export default function FamilyTree() {
           const dx = mx - t.x
           const dy = my - t.y
           const ratio = newScale / t.scale
-          return { x: mx - dx * ratio, y: my - dy * ratio, scale: newScale }
+          return clampTransform({ x: mx - dx * ratio, y: my - dy * ratio, scale: newScale }, boundsRef.current, cw, ch)
         })
       } else {
-        setTransform(t => ({ ...t, x: t.x - e.deltaX, y: t.y - e.deltaY }))
+        setTransform(t => {
+          const cw = containerRef.current?.clientWidth  || 800
+          const ch = containerRef.current?.clientHeight || 600
+          return clampTransform({ ...t, x: t.x - e.deltaX, y: t.y - e.deltaY }, boundsRef.current, cw, ch)
+        })
       }
     }
     el.addEventListener('wheel', handleWheel, { passive: false })
@@ -295,7 +324,10 @@ export default function FamilyTree() {
       const cx = cw / 2
       const cy = ch / 2
       const ratio = newScale / t.scale
-      return { x: cx - (cx - t.x) * ratio, y: cy - (cy - t.y) * ratio, scale: newScale }
+      return clampTransform(
+        { x: cx - (cx - t.x) * ratio, y: cy - (cy - t.y) * ratio, scale: newScale },
+        boundsRef.current, cw, ch
+      )
     })
   }
 
@@ -305,7 +337,6 @@ export default function FamilyTree() {
     </div>
   )
 
-  const bounds = Object.keys(positions).length ? getBounds(positions) : { minX: 0, maxX: 800, minY: 0, maxY: 600 }
   const svgW = bounds.maxX - bounds.minX
   const svgH = bounds.maxY - bounds.minY
   const isHighlighting = hoveredId !== null
